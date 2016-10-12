@@ -55,7 +55,7 @@ class InfoController:
 
 
 
-        self.schedule.enter( 10, 1, self.checkTongjiInfo, ())#每两个小时爬一次
+        self.schedule.enter( 60 * 60 *4, 1, self.checkTongjiInfo, ())#每两个小时爬一次
         self.schedule.run()
 
 
