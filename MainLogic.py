@@ -5,6 +5,7 @@ import time
 import sched
 import top.api.rest.AlibabaAliqinFcSmsNumSendRequest as SmsSender
 import top
+import top.api
 
 SourceURL = ['http://sse.tongji.edu.cn']
 InfoCenterPostfix = ['/InfoCenter/index.aspx']
@@ -44,9 +45,17 @@ class InfoController:
             testlen = len(self.LastMessage)
             self.MessageSender.sms_param = "{\"name\" : \"" + substr + "\"}"
             res = self.MessageSender.getResponse()
+            pass
+            if res[u'alibaba_aliqin_fc_sms_num_send_response'][u'result'][u'success'] == True:
+                print "Response[success] == True \n Data:" + str(time.localtime(time.time()))
+            else:
+                print "New Info but getReponse() sucks"
+        else:
+            print str(time.localtime(time.time())) + "\n no new info"
 
 
-        self.schedule.enter(60 * 60 * 2, 1, self.checkTongjiInfo, ())#每两个小时爬一次
+
+        self.schedule.enter( 10, 1, self.checkTongjiInfo, ())#每两个小时爬一次
         self.schedule.run()
 
 
@@ -55,6 +64,7 @@ class InfoController:
 
 
     def timeLoop(self):
+
         self.schedule.enter(0,1,self.checkTongjiInfo, ())
         self.schedule.run()
 
