@@ -46,7 +46,8 @@ class InfoController:
             res = self.MessageSender.getResponse()
 
 
-
+        self.schedule.enter(60 * 60 * 2, 1, self.checkTongjiInfo, ())#每两个小时爬一次
+        self.schedule.run()
 
 
 
@@ -54,14 +55,12 @@ class InfoController:
 
 
     def timeLoop(self):
-        CurrentTime = time.localtime(time.time())
+        self.schedule.enter(0,1,self.checkTongjiInfo, ())
+        self.schedule.run()
 
 
 
 
-test = InfoController('Tongji')
-
-test.checkTongjiInfo()
 
 
 
