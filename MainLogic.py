@@ -15,7 +15,7 @@ class InfoController:
     LastMessage = ''
     schedule = sched.scheduler(time.time, time.sleep)
     MessageSender = SmsSender()
-
+    LogFileName = 'log.txt'
 
     def __init__(self, type):
 
@@ -29,6 +29,7 @@ class InfoController:
     def checkTongjiInfo(self):
         response = urllib2.urlopen(SourceURL[0] + InfoCenterPostfix[0])
         html = response.read()
+        log = open(self.LogFileName, 'w+')
         #找到最新的一条消息
         pattern = u'''<div class="brief_info notice_ord">.*?<div class="date">(.*?)</div>.*?<div class="content">.*?<a href='../Notice/(.*?)'>.*?<span id="GridView1_lbTitle_0">(.*?)</span></a>'''
         Res = re.findall(pattern, html, re.S)[0]
@@ -45,16 +46,16 @@ class InfoController:
             testlen = len(self.LastMessage)
             self.MessageSender.sms_param = "{\"name\" : \"" + substr + "\"}"
             res = self.MessageSender.getResponse()
-            pass
+
             if res[u'alibaba_aliqin_fc_sms_num_send_response'][u'result'][u'success'] == True:
-                print "Response[success] == True \n Data:" + str(time.localtime(time.time()))
+                log.write("Response[success] == True     Data:" + str(time.localtime(time.time()))+'\n')
             else:
-                print "New Info but getReponse() sucks"
+                log.write("New Info but getReponse() sucks   Data:"  + str(time.localtime(time.time()))+'\n')
         else:
-            print str(time.localtime(time.time())) + "\n no new info"
+                log.write("No new info   Data:"  + str(time.localtime(time.time()))+'\n')
 
 
-
+        log.close()
         self.schedule.enter( 60 * 60 *4, 1, self.checkTongjiInfo, ())#每两个小时爬一次
         self.schedule.run()
 
