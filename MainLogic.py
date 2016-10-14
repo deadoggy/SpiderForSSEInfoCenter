@@ -35,7 +35,7 @@ class InfoController:
         except Exception, e:
             log.write(e.message + "   " + str(time.localtime(time.time()))+ '\n')
             log.close()
-            self.schedule.enter(60 * 60 * 4, 1, self.checkTongjiInfo, ())  # 每两个小时爬一次
+            self.schedule.enter(60 * 30, 1, self.checkTongjiInfo, ())  # 每半个小时爬一次
             self.schedule.run()
 
 
@@ -67,7 +67,7 @@ class InfoController:
                 log.wri
 
         log.close()
-        self.schedule.enter( 60 * 60 *4, 1, self.checkTongjiInfo, ())#每两个小时爬一次
+        self.schedule.enter( 60 * 30, 1, self.checkTongjiInfo, ())#每半个小时爬一次
         self.schedule.run()
 
 
