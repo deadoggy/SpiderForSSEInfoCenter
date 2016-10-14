@@ -54,9 +54,14 @@ class InfoController:
             else:
                 substr = self.LastMessage
 
-            testlen = len(self.LastMessage)
             self.MessageSender.sms_param = "{\"name\" : \"" + substr + "\"}"
-            res = self.MessageSender.getResponse()
+            try:#阿里挂掉
+                res = self.MessageSender.getResponse()
+            except Exception, e:
+                log.write(str(res) + "   " + str(time.localtime(time.time()))+'\n')
+                log.close()
+                self.schedule.enter(60 * 30, 1, self.checkTongjiInfo, ())  # 每半个小时爬一次
+                self.schedule.run()
 
             if res[u'alibaba_aliqin_fc_sms_num_send_response'][u'result'][u'success'] == True:
                 log.write("Response[success] == True     Data:" + str(time.localtime(time.time()))+'\n')
